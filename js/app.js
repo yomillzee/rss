@@ -512,6 +512,17 @@ const topFeed =
 
         });
 
+const dismissed =
+    getDismissedArticles();
+
+const visibleStories =
+    window.allStories.filter(
+        story =>
+            !dismissed.includes(
+                story.link
+            )
+    );
+
 if(topFeed){
 
     const newestStories =
