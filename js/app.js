@@ -8,6 +8,29 @@ window.onerror = function(message, source, line, col, error) {
         "</pre>";
 };
 
+function saveArticle(link){
+
+    const saved =
+        JSON.parse(
+            localStorage.getItem("savedArticles")
+            || "[]"
+        );
+
+    if(!saved.includes(link)){
+
+        saved.unshift(link);
+
+        localStorage.setItem(
+            "savedArticles",
+            JSON.stringify(saved)
+        );
+
+        alert("Saved!");
+
+    }
+
+}
+
 async function getFeed(feed){
 
     try{
