@@ -234,15 +234,31 @@ function renderSavedArticles(){
     }
 
     container.innerHTML =
-        saved
-            .map(link => `
-                <div class="story">
-                    <a href="${link}" target="_blank">
-                        ${link}
+    saved
+        .map(article => `
+            <div class="story">
+
+                <div class="category">
+                    ${article.category}
+                </div>
+
+                <div class="title">
+                    <a href="${article.link}" target="_blank">
+                        ${article.title}
                     </a>
                 </div>
-            `)
-            .join("");
+
+                <div class="meta">
+                    ${article.source}
+                </div>
+
+                <div class="published">
+                    ${formatDate(article.published)}
+                </div>
+
+            </div>
+        `)
+        .join("");
 
 }
 
