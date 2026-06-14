@@ -12,12 +12,13 @@ function saveArticle(link){
         saved.unshift(link);
 
         localStorage.setItem(
-            "savedArticles",
-            JSON.stringify(saved)
-        );
+    "savedArticles",
+    JSON.stringify(saved)
+);
 
-        alert("Saved!");
+renderSavedArticles();
 
+alert("Saved!");
     }
 
 }
