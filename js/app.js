@@ -1,17 +1,26 @@
 
-function saveArticle(link){
+function saveArticle(story){
 
     const saved =
-        JSON.parse(
-            localStorage.getItem("savedArticles")
-            || "[]"
-        );
+    JSON.parse(
+        localStorage.getItem(
+            "savedArticles"
+        ) || "[]"
+    );
 
-    if(!saved.includes(link)){
+const exists =
+    saved.some(
+        item =>
+            item.link === story.link
+    );
 
-        saved.unshift(link);
+if(exists){
+    return;
+}
 
-        localStorage.setItem(
+saved.unshift(story);
+
+localStorage.setItem(
     "savedArticles",
     JSON.stringify(saved)
 );
