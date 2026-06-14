@@ -17,7 +17,9 @@ function formatDate(dateString){
 
     try{
 
-        if(dateString.includes("00:00:00")){
+        let date;
+
+        if(dateString.includes(" ")){
 
             const [datePart] =
                 dateString.split(" ");
@@ -25,68 +27,26 @@ function formatDate(dateString){
             const [year,month,day] =
                 datePart.split("-");
 
-            const date =
-                new Date(
-                    Number(year),
-                    Number(month)-1,
-                    Number(day)
-                );
-
-            return date.toLocaleDateString(
-                undefined,
-                {
-                    month:"short",
-                    day:"numeric",
-                    year:"numeric"
-                }
+            date = new Date(
+                Number(year),
+                Number(month)-1,
+                Number(day)
             );
+
+        } else {
+
+            date = new Date(dateString);
 
         }
 
-        const [datePart,timePart] =
-            dateString.split(" ");
-
-        if(datePart && timePart){
-
-            const [year,month,day] =
-                datePart.split("-");
-
-            const [hour,minute] =
-                timePart.split(":");
-
-            const date =
-                new Date(
-                    Number(year),
-                    Number(month)-1,
-                    Number(day),
-                    Number(hour),
-                    Number(minute)
-                );
-
-            return (
-                date.toLocaleDateString(
-                    undefined,
-                    {
-                        month:"short",
-                        day:"numeric",
-                        year:"numeric"
-                    }
-                )
-                +
-                " • "
-                +
-                date.toLocaleTimeString(
-                    undefined,
-                    {
-                        hour:"numeric",
-                        minute:"2-digit"
-                    }
-                )
-            );
-
-        }
-
-        return dateString;
+        return date.toLocaleDateString(
+            undefined,
+            {
+                month:"short",
+                day:"numeric",
+                year:"numeric"
+            }
+        );
 
     }
 
@@ -95,5 +55,7 @@ function formatDate(dateString){
         return dateString;
 
     }
+
+}
 
 }
