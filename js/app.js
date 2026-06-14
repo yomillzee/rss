@@ -1,3 +1,13 @@
+
+window.onerror = function(message, source, line, col, error) {
+    document.body.innerHTML =
+        "<pre style='padding:20px'>" +
+        message +
+        "\n\n" +
+        (error?.stack || "") +
+        "</pre>";
+};
+
 async function getFeed(feed){
 
     try{
