@@ -526,7 +526,7 @@ const visibleStories =
 if(topFeed){
 
     const newestStories =
-        [...window.allStories]
+    [...visibleStories]
             .sort(
                 (a,b) =>
                     new Date(
@@ -550,7 +550,7 @@ if(topFeed){
 
 }
 
-    window.allStories.forEach(story => {
+    visibleStories.forEach(story => {
 
         const target =
             sections[
