@@ -122,6 +122,11 @@ async function buildFeed(){
                 "ai-feed"
             ),
 
+Tech:
+    document.getElementById(
+        "tech-feed"
+    ),
+
         Search:
             document.getElementById(
                 "search-feed"
