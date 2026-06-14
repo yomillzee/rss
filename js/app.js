@@ -25,9 +25,6 @@ alert("Saved!");
 
 window.saveArticle = saveArticle;
 
-console.log("SAVE FUNCTION REGISTERED");
-alert("SAVE FUNCTION REGISTERED");
-
 async function getFeed(feed){
 
     try{
