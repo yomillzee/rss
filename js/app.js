@@ -44,6 +44,56 @@ function decodeLink(link){
 
 }
 
+function showToast(message){
+
+    const existingToast =
+        document.querySelector(
+            ".toast"
+        );
+
+    if(existingToast){
+        existingToast.remove();
+    }
+
+    const toast =
+        document.createElement(
+            "div"
+        );
+
+    toast.className =
+        "toast";
+
+    toast.textContent =
+        message;
+
+    document.body.appendChild(
+        toast
+    );
+
+    requestAnimationFrame(() => {
+
+        toast.classList.add(
+            "toast-visible"
+        );
+
+    });
+
+    setTimeout(() => {
+
+        toast.classList.remove(
+            "toast-visible"
+        );
+
+    }, 2200);
+
+    setTimeout(() => {
+
+        toast.remove();
+
+    }, 2600);
+
+}
+
 function saveArticle(link){
 
     const decodedLink =
@@ -68,6 +118,7 @@ function saveArticle(link){
         );
 
     if(exists){
+        showToast("Already saved");
         return;
     }
 
@@ -77,7 +128,7 @@ function saveArticle(link){
 
     renderSavedArticles();
 
-    alert("Saved!");
+    showToast("Saved");
 
 }
 
