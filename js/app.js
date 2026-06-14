@@ -368,6 +368,11 @@ function renderSavedArticles(){
 
 function renderFeed(){
 
+const topFeed =
+    document.getElementById(
+        "top-feed"
+    );
+
     const sections = {
 
         AI:
@@ -412,6 +417,33 @@ function renderFeed(){
 
         });
 
+if(topFeed){
+
+    const newestStories =
+        [...window.allStories]
+            .sort(
+                (a,b) =>
+                    new Date(
+                        b.published || 0
+                    ) -
+                    new Date(
+                        a.published || 0
+                    )
+            )
+            .slice(0,10);
+
+    topFeed.innerHTML =
+        newestStories
+            .map(
+                story =>
+                    renderStory(
+                        story
+                    )
+            )
+            .join("");
+
+}
+
     window.allStories.forEach(story => {
 
         const target =
@@ -454,10 +486,16 @@ async function buildFeed(){
             );
 
     window.allStories =
-        stories;
-
-    renderFeed();
-
+    stories.sort(
+        (a,b) =>
+            new Date(
+                b.published || 0
+            ) -
+            new Date(
+                a.published || 0
+            )
+    );
+renderFeed();
 }
 
 renderSavedArticles();
