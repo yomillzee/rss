@@ -259,6 +259,21 @@ function renderStory(story){
 
     <div class="story">
 
+${
+    story.thumbnail
+    ?
+    `
+    <img
+        class="story-thumb"
+        src="${story.thumbnail}"
+        alt=""
+        loading="lazy"
+    >
+    `
+    :
+    ""
+}
+
         <div class="category">
             ${story.category}
         </div>
