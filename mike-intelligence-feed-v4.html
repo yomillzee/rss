@@ -1,0 +1,128 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mike Intelligence Feed v4</title>
+<style>
+body{font-family:Arial,sans-serif;max-width:1000px;margin:40px auto;padding:0 20px;color:#111;}
+h1{margin-bottom:5px;}
+.subtitle{color:#666;margin-bottom:20px;}
+.toc{display:flex;flex-wrap:wrap;gap:10px;margin:25px 0 35px;}
+.toc a{text-decoration:none;color:#111;background:#f3f4f6;padding:8px 14px;border-radius:999px;font-size:14px;font-weight:600;}
+.toc a:hover{background:#e5e7eb;}
+section{margin-bottom:50px;}
+section h2{margin-bottom:20px;padding-bottom:10px;border-bottom:2px solid #eee;}
+.story{border-bottom:1px solid #ddd;padding:20px 0;}
+.category{font-size:11px;color:#666;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;}
+.title{font-size:22px;font-weight:bold;margin-bottom:10px;}
+.title a{text-decoration:none;color:#111;}
+.title a:hover{text-decoration:underline;}
+.meta{font-size:13px;color:#888;margin-bottom:8px;}
+.published{font-size:12px;color:#666;margin-bottom:12px;}
+.summary{line-height:1.5;}
+.empty{color:#999;font-style:italic;}
+</style>
+</head>
+<body>
+
+<h1>Mike Intelligence Feed</h1>
+<div class="subtitle">AI • Search • Marketing • Business • Politics</div>
+
+<div class="toc">
+<a href="#ai">AI</a>
+<a href="#search">Search</a>
+<a href="#business">Business</a>
+<a href="#marketing">Marketing</a>
+<a href="#politics">Politics</a>
+</div>
+
+<section id="ai"><h2>AI</h2><div id="ai-feed"><div class="empty">Loading...</div></div></section>
+<section id="search"><h2>Search</h2><div id="search-feed"><div class="empty">Loading...</div></div></section>
+<section id="business"><h2>Business</h2><div id="business-feed"><div class="empty">Loading...</div></div></section>
+<section id="marketing"><h2>Marketing</h2><div id="marketing-feed"><div class="empty">Loading...</div></div></section>
+<section id="politics"><h2>Politics</h2><div id="politics-feed"><div class="empty">Loading...</div></div></section>
+
+<script>
+const feeds = [
+{name:"OpenAI",category:"AI",url:"https://openai.com/news/rss.xml"},
+{name:"Search Engine Land",category:"Search",url:"https://searchengineland.com/feed"},
+{name:"Ahrefs Blog",category:"Search",url:"https://ahrefs.com/blog/feed"},
+{name:"HubSpot Marketing",category:"Marketing",url:"https://blog.hubspot.com/marketing/rss.xml"},
+{name:"Associated Press Politics",category:"Politics",url:"https://apnews.com/hub/politics/rss"},
+{name:"NPR Politics",category:"Politics",url:"https://feeds.npr.org/1014/rss.xml"},
+{name:"Financial Times",category:"Business",url:"https://www.ft.com/rss/home"}
+];
+
+function stripHtml(html){
+ const div=document.createElement("div");
+ div.innerHTML=html;
+ return div.textContent||div.innerText||"";
+}
+
+function formatDate(dateString){
+ try{
+   return new Date(dateString).toLocaleString();
+ }catch(e){
+   return dateString || "";
+ }
+}
+
+async function getFeed(feed){
+ const endpoint=`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed.url)}`;
+ const response=await fetch(endpoint);
+ const data=await response.json();
+
+ return (data.items||[]).map(item=>({
+   category:feed.category,
+   source:feed.name,
+   title:item.title,
+   link:item.link,
+   published:item.pubDate,
+   summary:stripHtml(item.description||"")
+ }));
+}
+
+function renderStory(story){
+ return `
+ <div class="story">
+   <div class="category">${story.category}</div>
+   <div class="title"><a href="${story.link}" target="_blank">${story.title}</a></div>
+   <div class="meta">${story.source}</div>
+   <div class="published">Published: ${formatDate(story.published)}</div>
+   <div class="summary">${story.summary.substring(0,250)}...</div>
+ </div>`;
+}
+
+async function buildFeed(){
+ const results = await Promise.allSettled(feeds.map(f=>getFeed(f)));
+ const stories = results.filter(r=>r.status==="fulfilled").flatMap(r=>r.value);
+
+ stories.sort((a,b)=>
+   new Date(b.published || 0) - new Date(a.published || 0)
+ );
+
+ const sections = {
+   AI: document.getElementById("ai-feed"),
+   Search: document.getElementById("search-feed"),
+   Business: document.getElementById("business-feed"),
+   Marketing: document.getElementById("marketing-feed"),
+   Politics: document.getElementById("politics-feed")
+ };
+
+ Object.values(sections).forEach(el=>el.innerHTML="");
+
+ stories.forEach(story=>{
+   const target = sections[story.category];
+   if(target){
+      target.innerHTML += renderStory(story);
+   }
+ });
+}
+
+buildFeed();
+</script>
+
+</body>
+</html>
