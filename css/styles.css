@@ -95,7 +95,8 @@ section h2{
     font-style:italic;
 }
 
-.save-btn{
+.save-btn,
+.unsave-btn{
     margin-top:12px;
     padding:8px 12px;
     border:none;
@@ -107,6 +108,7 @@ section h2{
     cursor:pointer;
 }
 
-.save-btn:hover{
+.save-btn:hover,
+.unsave-btn:hover{
     background:#e5e7eb;
 }
