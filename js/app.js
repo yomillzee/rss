@@ -31,6 +31,8 @@ function saveArticle(link){
 
 }
 
+window.saveArticle = saveArticle;
+
 async function getFeed(feed){
 
     try{
