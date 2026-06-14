@@ -44,6 +44,14 @@ function decodeLink(link){
 
 }
 
+function isArticleSaved(link){
+
+    return getSavedArticles().some(
+        article => article.link === link
+    );
+
+}
+
 function showToast(message){
 
     const existingToast =
@@ -127,6 +135,7 @@ function saveArticle(link){
     setSavedArticles(saved);
 
     renderSavedArticles();
+    renderFeed();
 
     showToast("Saved");
 
@@ -147,6 +156,7 @@ function unsaveArticle(link){
     setSavedArticles(saved);
 
     renderSavedArticles();
+    renderFeed();
 
 }
 
@@ -203,6 +213,41 @@ async function getFeed(feed){
 
 }
 
+function renderSaveButton(story){
+
+    const saved =
+        isArticleSaved(
+            story.link
+        );
+
+    if(saved){
+
+        return `
+
+        <button
+            class="save-btn is-saved"
+            onclick="unsaveArticle('${encodeURIComponent(story.link)}')"
+        >
+            ★ SAVED
+        </button>
+
+        `;
+
+    }
+
+    return `
+
+        <button
+            class="save-btn"
+            onclick="saveArticle('${encodeURIComponent(story.link)}')"
+        >
+            Save
+        </button>
+
+    `;
+
+}
+
 function renderStory(story){
 
     return `
@@ -244,12 +289,7 @@ function renderStory(story){
             )}...
         </div>
 
-        <button
-            class="save-btn"
-            onclick="saveArticle('${encodeURIComponent(story.link)}')"
-        >
-            ⭐ Save
-        </button>
+        ${renderSaveButton(story)}
 
     </div>
 
@@ -317,7 +357,7 @@ function renderSavedArticles(){
                     class="unsave-btn"
                     onclick="unsaveArticle('${encodeURIComponent(article.link)}')"
                 >
-                    ☆ Unsave
+                    Unsave
                 </button>
 
             </div>
@@ -326,29 +366,7 @@ function renderSavedArticles(){
 
 }
 
-async function buildFeed(){
-
-    const results =
-        await Promise.allSettled(
-            feeds.map(
-                feed =>
-                    getFeed(feed)
-            )
-        );
-
-    const stories =
-        results
-            .filter(
-                r =>
-                    r.status === "fulfilled"
-            )
-            .flatMap(
-                r =>
-                    r.value
-            );
-
-    window.allStories =
-        stories;
+function renderFeed(){
 
     const sections = {
 
@@ -394,7 +412,7 @@ async function buildFeed(){
 
         });
 
-    stories.forEach(story => {
+    window.allStories.forEach(story => {
 
         const target =
             sections[
@@ -411,6 +429,34 @@ async function buildFeed(){
         }
 
     });
+
+}
+
+async function buildFeed(){
+
+    const results =
+        await Promise.allSettled(
+            feeds.map(
+                feed =>
+                    getFeed(feed)
+            )
+        );
+
+    const stories =
+        results
+            .filter(
+                r =>
+                    r.status === "fulfilled"
+            )
+            .flatMap(
+                r =>
+                    r.value
+            );
+
+    window.allStories =
+        stories;
+
+    renderFeed();
 
 }
 
