@@ -123,7 +123,7 @@ function renderStory(story){
 
 <button
     class="save-btn"
-    data-story='${JSON.stringify(story)}'
+    data-link="${story.link}"
 >
     ⭐ Save
 </button>
