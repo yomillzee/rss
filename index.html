@@ -79,7 +79,7 @@ async function getFeed(feed){
    source:feed.name,
    title:item.title,
    link:item.link,
-   published: JSON.stringify(item),
+   published: item.pubDate || item.date || item.isoDate || "MISSING",
    summary:stripHtml(item.description||"")
  }));
 
@@ -105,7 +105,7 @@ async function getFeed(feed){
      source: feed.name,
      title: item.title,
      link: item.link,
-     published: JSON.stringify(item),
+     published: item.pubDate || item.date || item.isoDate || "MISSING",
      summary: stripHtml(item.description || "")
    };
 
@@ -120,7 +120,9 @@ function renderStory(story){
    <div class="category">${story.category}</div>
    <div class="title"><a href="${story.link}" target="_blank">${story.title}</a></div>
    <div class="meta">${story.source}</div>
-   <div class="published">Published: ${formatDate(story.published)}</div>
+ <div class="published">
+  Published: ${story.published}
+</div>
    <div class="summary">${story.summary.substring(0,250)}...</div>
  </div>`;
 }
