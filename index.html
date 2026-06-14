@@ -83,20 +83,35 @@ async function getFeed(feed){
    summary:stripHtml(item.description||"")
  }));
 
- return (data.items||[]).map(item=>{
+ async function getFeed(feed){
 
-  console.log(feed.name, item.pubDate, item);
+ const endpoint =
+   `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed.url)}`;
 
-  return {
-    category: feed.category,
-    source: feed.name,
-    title: item.title,
-    link: item.link,
-    published: item.pubDate,
-    summary: stripHtml(item.description||"")
-  };
+ const response = await fetch(endpoint);
 
-});
+ const data = await response.json();
+
+ return (data.items || []).map(item => {
+
+   console.log(
+     feed.name,
+     item.pubDate,
+     item
+   );
+
+   return {
+     category: feed.category,
+     source: feed.name,
+     title: item.title,
+     link: item.link,
+     published: item.pubDate,
+     summary: stripHtml(item.description || "")
+   };
+
+ });
+
+}
 }
 
 function renderStory(story){
