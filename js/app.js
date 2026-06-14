@@ -373,7 +373,18 @@ ${
             )}...
         </div>
 
-        ${renderSaveButton(story)}
+        <div class="story-actions">
+
+    ${renderSaveButton(story)}
+
+    <button
+        class="dismiss-btn"
+        onclick="dismissArticle('${encodeURIComponent(story.link)}')"
+    >
+        Dismiss
+    </button>
+
+</div>
 
     </div>
 
