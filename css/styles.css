@@ -112,3 +112,25 @@ section h2{
 .unsave-btn:hover{
     background:#e5e7eb;
 }
+
+.toast{
+    position:fixed;
+    left:50%;
+    bottom:24px;
+    transform:translate(-50%, 16px);
+    padding:10px 14px;
+    border-radius:999px;
+    background:#111;
+    color:#fff;
+    font-size:14px;
+    font-weight:600;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .2s ease, transform .2s ease;
+    z-index:9999;
+}
+
+.toast-visible{
+    opacity:1;
+    transform:translate(-50%, 0);
+}
