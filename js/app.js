@@ -189,6 +189,38 @@ function unsaveArticle(link){
 
 }
 
+function dismissArticle(link){
+
+    const decodedLink =
+        decodeLink(link);
+
+    const dismissed =
+        getDismissedArticles();
+
+    if(
+        dismissed.includes(
+            decodedLink
+        )
+    ){
+        return;
+    }
+
+    dismissed.unshift(
+        decodedLink
+    );
+
+    setDismissedArticles(
+        dismissed
+    );
+
+    renderFeed();
+
+    showToast(
+        "Dismissed"
+    );
+
+}
+
 window.saveArticle = saveArticle;
 window.unsaveArticle = unsaveArticle;
 
