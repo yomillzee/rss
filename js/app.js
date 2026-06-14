@@ -91,11 +91,18 @@ function renderStory(story){
         }
 
         <div class="summary">
-            ${story.summary.substring(
-                0,
-                250
-            )}...
-        </div>
+    ${story.summary.substring(
+        0,
+        250
+    )}...
+</div>
+
+<button
+    class="save-btn"
+    onclick="saveArticle('${story.link}')"
+>
+    ⭐ Save
+</button>
 
     </div>
 
