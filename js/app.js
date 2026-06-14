@@ -212,6 +212,42 @@ Tech:
 
 }
 
+function renderSavedArticles(){
+
+    const container =
+        document.getElementById(
+            "saved-feed"
+        );
+
+    const saved =
+        JSON.parse(
+            localStorage.getItem(
+                "savedArticles"
+            ) || "[]"
+        );
+
+    if(saved.length === 0){
+
+        container.innerHTML =
+            '<div class="empty">No saved articles yet.</div>';
+
+        return;
+
+    }
+
+    container.innerHTML =
+        saved
+            .map(link => `
+                <div class="story">
+                    <a href="${link}" target="_blank">
+                        ${link}
+                    </a>
+                </div>
+            `)
+            .join("");
+
+}
+
 buildFeed();
 
 alert(typeof saveArticle);
