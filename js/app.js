@@ -116,7 +116,7 @@ function renderStory(story){
 
 <button
     class="save-btn"
-    onclick="saveArticle('${story.link}')"
+    data-story='${JSON.stringify(story)}'
 >
     ⭐ Save
 </button>
