@@ -28,8 +28,6 @@ localStorage.setItem(
 renderSavedArticles();
 
 alert("Saved!");
-    }
-
 }
 
 window.saveArticle = saveArticle;
@@ -201,19 +199,17 @@ Tech:
 
     stories.forEach(story => {
 
-        const target =
-            sections[
-                story.category
-            ];
+    const target =
+        sections[story.category];
 
-        if(target){
+    if(target){
 
-            target.innerHTML +=
-                renderStory(
-                    story
-                );
+        target.innerHTML +=
+            renderStory(story);
 
-        }
+    }
+
+});
 
 document
     .querySelectorAll(".save-btn")
