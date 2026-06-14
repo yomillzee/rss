@@ -1,13 +1,4 @@
 
-window.onerror = function(message, source, line, col, error) {
-    document.body.innerHTML =
-        "<pre style='padding:20px'>" +
-        message +
-        "\n\n" +
-        (error?.stack || "") +
-        "</pre>";
-};
-
 function saveArticle(link){
 
     const saved =
