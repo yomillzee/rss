@@ -1,33 +1,27 @@
-
-function saveArticle(story){
+function saveArticle(link){
 
     const saved =
-    JSON.parse(
-        localStorage.getItem(
-            "savedArticles"
-        ) || "[]"
+        JSON.parse(
+            localStorage.getItem(
+                "savedArticles"
+            ) || "[]"
+        );
+
+    if(saved.includes(link)){
+        return;
+    }
+
+    saved.unshift(link);
+
+    localStorage.setItem(
+        "savedArticles",
+        JSON.stringify(saved)
     );
 
-const exists =
-    saved.some(
-        item =>
-            item.link === story.link
-    );
+    renderSavedArticles();
 
-if(exists){
-    return;
-}
+    alert("Saved!");
 
-saved.unshift(story);
-
-localStorage.setItem(
-    "savedArticles",
-    JSON.stringify(saved)
-);
-
-renderSavedArticles();
-
-alert("Saved!");
 }
 
 window.saveArticle = saveArticle;
@@ -47,10 +41,10 @@ async function getFeed(feed){
 
         return (data.items || []).map(item => ({
 
-            category:feed.category,
-            source:feed.name,
-            title:item.title,
-            link:item.link,
+            category: feed.category,
+            source: feed.name,
+            title: item.title,
+            link: item.link,
 
             published:
                 item.pubDate ||
@@ -115,18 +109,18 @@ function renderStory(story){
         }
 
         <div class="summary">
-    ${story.summary.substring(
-        0,
-        250
-    )}...
-</div>
+            ${story.summary.substring(
+                0,
+                250
+            )}...
+        </div>
 
-<button
-    class="save-btn"
-    data-link="${story.link}"
->
-    ⭐ Save
-</button>
+        <button
+            class="save-btn"
+            onclick="saveArticle('${story.link}')"
+        >
+            ⭐ Save
+        </button>
 
     </div>
 
@@ -163,10 +157,10 @@ async function buildFeed(){
                 "ai-feed"
             ),
 
-Tech:
-    document.getElementById(
-        "tech-feed"
-    ),
+        Tech:
+            document.getElementById(
+                "tech-feed"
+            ),
 
         Search:
             document.getElementById(
@@ -192,42 +186,29 @@ Tech:
 
     Object
         .values(sections)
-        .forEach(
-            el =>
-                el.innerHTML = ""
-        );
+        .forEach(el => {
+
+            if(el){
+                el.innerHTML = "";
+            }
+
+        });
 
     stories.forEach(story => {
 
-    const target =
-        sections[story.category];
+        const target =
+            sections[
+                story.category
+            ];
 
-    if(target){
+        if(target){
 
-        target.innerHTML +=
-            renderStory(story);
+            target.innerHTML +=
+                renderStory(
+                    story
+                );
 
-    }
-
-});
-
-document
-    .querySelectorAll(".save-btn")
-    .forEach(button => {
-
-        button.addEventListener(
-            "click",
-            () => {
-
-                const story =
-                    JSON.parse(
-                        button.dataset.story
-                    );
-
-                saveArticle(story);
-
-            }
-        );
+        }
 
     });
 
@@ -239,6 +220,10 @@ function renderSavedArticles(){
         document.getElementById(
             "saved-feed"
         );
+
+    if(!container){
+        return;
+    }
 
     const saved =
         JSON.parse(
@@ -257,35 +242,17 @@ function renderSavedArticles(){
     }
 
     container.innerHTML =
-    saved
-        .map(article => `
-            <div class="story">
-
-                <div class="category">
-                    ${article.category}
-                </div>
-
-                <div class="title">
-                    <a href="${article.link}" target="_blank">
-                        ${article.title}
+        saved
+            .map(link => `
+                <div class="story">
+                    <a href="${link}" target="_blank">
+                        ${link}
                     </a>
                 </div>
-
-                <div class="meta">
-                    ${article.source}
-                </div>
-
-                <div class="published">
-                    ${formatDate(article.published)}
-                </div>
-
-            </div>
-        `)
-        .join("");
+            `)
+            .join("");
 
 }
 
 renderSavedArticles();
 buildFeed();
-
-renderSavedArticles();
