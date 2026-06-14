@@ -172,3 +172,30 @@ section h2{
     margin-bottom:14px;
     display:block;
 }
+
+.story-actions{
+    display:flex;
+    gap:10px;
+    margin-top:14px;
+}
+
+.dismiss-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:6px 10px;
+    border:1px solid #e5e7eb;
+    border-radius:999px;
+    background:transparent;
+    color:#737373;
+    font-size:13px;
+    font-weight:500;
+    cursor:pointer;
+    transition:all .15s ease;
+}
+
+.dismiss-btn:hover{
+    background:#f9fafb;
+    border-color:#d1d5db;
+    color:#111;
+}
