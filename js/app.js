@@ -2,25 +2,24 @@ function saveArticle(link){
 
     const saved =
         JSON.parse(
-            localStorage.getItem(
-                "savedArticles"
-            ) || "[]"
+            localStorage.getItem("savedArticles")
+            || "[]"
         );
 
-    if(saved.includes(link)){
-        return;
+    if(!saved.includes(link)){
+
+        saved.unshift(link);
+
+        localStorage.setItem(
+            "savedArticles",
+            JSON.stringify(saved)
+        );
+
+        renderSavedArticles();
+
+        alert("Saved!");
+
     }
-
-    saved.unshift(link);
-
-    localStorage.setItem(
-        "savedArticles",
-        JSON.stringify(saved)
-    );
-
-    renderSavedArticles();
-
-    alert("Saved!");
 
 }
 
@@ -128,6 +127,50 @@ function renderStory(story){
 
 }
 
+function renderSavedArticles(){
+
+    const container =
+        document.getElementById(
+            "saved-feed"
+        );
+
+    if(!container){
+        return;
+    }
+
+    const saved =
+        JSON.parse(
+            localStorage.getItem(
+                "savedArticles"
+            ) || "[]"
+        );
+
+    if(saved.length === 0){
+
+        container.innerHTML =
+            '<div class="empty">No saved articles yet.</div>';
+
+        return;
+
+    }
+
+    container.innerHTML =
+        saved.map(link => `
+
+            <div class="story">
+
+                <div class="title">
+                    <a href="${link}" target="_blank">
+                        ${link}
+                    </a>
+                </div>
+
+            </div>
+
+        `).join("");
+
+}
+
 async function buildFeed(){
 
     const results =
@@ -142,8 +185,7 @@ async function buildFeed(){
         results
             .filter(
                 r =>
-                    r.status ===
-                    "fulfilled"
+                    r.status === "fulfilled"
             )
             .flatMap(
                 r =>
@@ -211,46 +253,6 @@ async function buildFeed(){
         }
 
     });
-
-}
-
-function renderSavedArticles(){
-
-    const container =
-        document.getElementById(
-            "saved-feed"
-        );
-
-    if(!container){
-        return;
-    }
-
-    const saved =
-        JSON.parse(
-            localStorage.getItem(
-                "savedArticles"
-            ) || "[]"
-        );
-
-    if(saved.length === 0){
-
-        container.innerHTML =
-            '<div class="empty">No saved articles yet.</div>';
-
-        return;
-
-    }
-
-    container.innerHTML =
-        saved
-            .map(link => `
-                <div class="story">
-                    <a href="${link}" target="_blank">
-                        ${link}
-                    </a>
-                </div>
-            `)
-            .join("");
 
 }
 
