@@ -1,8 +1,57 @@
+function getSavedArticles(){
+
+    try{
+
+        return JSON.parse(
+            localStorage.getItem(
+                "savedArticles"
+            ) || "[]"
+        );
+
+    }
+
+    catch(error){
+
+        console.error(
+            "Saved articles parse error:",
+            error
+        );
+
+        return [];
+
+    }
+
+}
+
+function setSavedArticles(saved){
+
+    localStorage.setItem(
+        "savedArticles",
+        JSON.stringify(saved)
+    );
+
+}
+
+function decodeLink(link){
+
+    try{
+        return decodeURIComponent(link);
+    }
+
+    catch(error){
+        return link;
+    }
+
+}
+
 function saveArticle(link){
+
+    const decodedLink =
+        decodeLink(link);
 
     const article =
         window.allStories.find(
-            story => story.link === link
+            story => story.link === decodedLink
         );
 
     if(!article){
@@ -10,11 +59,7 @@ function saveArticle(link){
     }
 
     const saved =
-        JSON.parse(
-            localStorage.getItem(
-                "savedArticles"
-            ) || "[]"
-        );
+        getSavedArticles();
 
     const exists =
         saved.some(
@@ -28,10 +73,7 @@ function saveArticle(link){
 
     saved.unshift(article);
 
-    localStorage.setItem(
-        "savedArticles",
-        JSON.stringify(saved)
-    );
+    setSavedArticles(saved);
 
     renderSavedArticles();
 
@@ -39,7 +81,26 @@ function saveArticle(link){
 
 }
 
+function unsaveArticle(link){
+
+    const decodedLink =
+        decodeLink(link);
+
+    const saved =
+        getSavedArticles()
+            .filter(
+                article =>
+                    article.link !== decodedLink
+            );
+
+    setSavedArticles(saved);
+
+    renderSavedArticles();
+
+}
+
 window.saveArticle = saveArticle;
+window.unsaveArticle = unsaveArticle;
 
 window.allStories = [];
 
@@ -134,7 +195,7 @@ function renderStory(story){
 
         <button
             class="save-btn"
-            onclick="saveArticle('${story.link}')"
+            onclick="saveArticle('${encodeURIComponent(story.link)}')"
         >
             ⭐ Save
         </button>
@@ -157,11 +218,7 @@ function renderSavedArticles(){
     }
 
     const saved =
-        JSON.parse(
-            localStorage.getItem(
-                "savedArticles"
-            ) || "[]"
-        );
+        getSavedArticles();
 
     if(saved.length === 0){
 
@@ -204,6 +261,13 @@ function renderSavedArticles(){
                     :
                     ""
                 }
+
+                <button
+                    class="unsave-btn"
+                    onclick="unsaveArticle('${encodeURIComponent(article.link)}')"
+                >
+                    ☆ Unsave
+                </button>
 
             </div>
 
