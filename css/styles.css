@@ -126,6 +126,18 @@ section h2{
     transform:translateY(0);
 }
 
+.save-btn.is-saved{
+    background:#111;
+    border-color:#111;
+    color:#fff;
+}
+
+.save-btn.is-saved:hover{
+    background:#222;
+    border-color:#222;
+    color:#fff;
+}
+
 .unsave-btn{
     color:#737373;
 }
