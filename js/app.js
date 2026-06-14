@@ -185,6 +185,11 @@ async function getFeed(feed){
             title: item.title,
             link: item.link,
 
+thumbnail:
+    item.thumbnail ||
+    item.enclosure?.link ||
+    null,
+
             published:
                 item.pubDate ||
                 item.date ||
