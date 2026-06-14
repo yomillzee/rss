@@ -37,6 +37,12 @@ const feeds = [
 },
 
 {
+    name:"Politico",
+    category:"Politics",
+    url:"https://rss.politico.com/politics-news.xml"
+},
+
+{
     name:"NPR Politics",
     category:"Politics",
     url:"https://feeds.npr.org/1014/rss.xml"
