@@ -224,6 +224,9 @@ function dismissArticle(link){
 window.saveArticle = saveArticle;
 window.unsaveArticle = unsaveArticle;
 
+window.dismissArticle =
+    dismissArticle;
+
 window.allStories = [];
 
 async function getFeed(feed){
