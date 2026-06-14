@@ -222,3 +222,5 @@ Tech:
 }
 
 buildFeed();
+
+alert(typeof saveArticle);
