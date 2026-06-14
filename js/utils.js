@@ -57,5 +57,3 @@ function formatDate(dateString){
     }
 
 }
-
-}
