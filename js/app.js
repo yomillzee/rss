@@ -206,6 +206,24 @@ Tech:
 
         }
 
+document
+    .querySelectorAll(".save-btn")
+    .forEach(button => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                const story =
+                    JSON.parse(
+                        button.dataset.story
+                    );
+
+                saveArticle(story);
+
+            }
+        );
+
     });
 
 }
