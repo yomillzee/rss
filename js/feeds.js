@@ -10,7 +10,7 @@ const feeds = [
     name:"Hacker News",
     category:"AI",
     url:"https://hnrss.org/frontpage"
-}
+},
 
 {
     name:"Search Engine Land",
