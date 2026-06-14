@@ -8,7 +8,7 @@ const feeds = [
 
 {
     name:"Hacker News",
-    category:"AI",
+    category:"Tech",
     url:"https://hnrss.org/frontpage"
 },
 
