@@ -82,6 +82,21 @@ async function getFeed(feed){
    published:item.pubDate,
    summary:stripHtml(item.description||"")
  }));
+
+ return (data.items||[]).map(item=>{
+
+  console.log(feed.name, item.pubDate, item);
+
+  return {
+    category: feed.category,
+    source: feed.name,
+    title: item.title,
+    link: item.link,
+    published: item.pubDate,
+    summary: stripHtml(item.description||"")
+  };
+
+});
 }
 
 function renderStory(story){
