@@ -79,7 +79,11 @@ async function getFeed(feed){
    source:feed.name,
    title:item.title,
    link:item.link,
-   published: item.pubDate || item.date || item.isoDate || "MISSING",
+   published:
+  item.pubDate ||
+  item.date ||
+  item.isoDate ||
+  null,
    summary:stripHtml(item.description||"")
  }));
 
@@ -105,7 +109,11 @@ async function getFeed(feed){
      source: feed.name,
      title: item.title,
      link: item.link,
-     published: item.pubDate || item.date || item.isoDate || "MISSING",
+     published:
+  item.pubDate ||
+  item.date ||
+  item.isoDate ||
+  null,
      summary: stripHtml(item.description || "")
    };
 
@@ -121,7 +129,11 @@ function renderStory(story){
    <div class="title"><a href="${story.link}" target="_blank">${story.title}</a></div>
    <div class="meta">${story.source}</div>
  <div class="published">
-  Published: ${story.published}
+  ${
+    story.published
+      ? `Published: ${story.published}`
+      : ''
+  }
 </div>
    <div class="summary">${story.summary.substring(0,250)}...</div>
  </div>`;
