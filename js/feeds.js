@@ -7,6 +7,12 @@ const feeds = [
 },
 
 {
+    name:"Hacker News",
+    category:"AI",
+    url:"https://hnrss.org/frontpage"
+}
+
+{
     name:"Search Engine Land",
     category:"Search",
     url:"https://searchengineland.com/feed"
