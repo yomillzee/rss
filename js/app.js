@@ -32,6 +32,35 @@ function setSavedArticles(saved){
 
 }
 
+function getDismissedArticles(){
+
+    try{
+
+        return JSON.parse(
+            localStorage.getItem(
+                "dismissedArticles"
+            ) || "[]"
+        );
+
+    }
+
+    catch(error){
+
+        return [];
+
+    }
+
+}
+
+function setDismissedArticles(dismissed){
+
+    localStorage.setItem(
+        "dismissedArticles",
+        JSON.stringify(dismissed)
+    );
+
+}
+
 function decodeLink(link){
 
     try{
