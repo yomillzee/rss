@@ -1,29 +1,47 @@
 function saveArticle(link){
 
+    const article =
+        window.allStories.find(
+            story => story.link === link
+        );
+
+    if(!article){
+        return;
+    }
+
     const saved =
         JSON.parse(
-            localStorage.getItem("savedArticles")
-            || "[]"
+            localStorage.getItem(
+                "savedArticles"
+            ) || "[]"
         );
 
-    if(!saved.includes(link)){
-
-        saved.unshift(link);
-
-        localStorage.setItem(
-            "savedArticles",
-            JSON.stringify(saved)
+    const exists =
+        saved.some(
+            item =>
+                item.link === article.link
         );
 
-        renderSavedArticles();
-
-        alert("Saved!");
-
+    if(exists){
+        return;
     }
+
+    saved.unshift(article);
+
+    localStorage.setItem(
+        "savedArticles",
+        JSON.stringify(saved)
+    );
+
+    renderSavedArticles();
+
+    alert("Saved!");
 
 }
 
 window.saveArticle = saveArticle;
+
+window.allStories = [];
 
 async function getFeed(feed){
 
@@ -155,15 +173,37 @@ function renderSavedArticles(){
     }
 
     container.innerHTML =
-        saved.map(link => `
+        saved.map(article => `
 
             <div class="story">
 
+                <div class="category">
+                    ${article.category}
+                </div>
+
                 <div class="title">
-                    <a href="${link}" target="_blank">
-                        ${link}
+                    <a href="${article.link}" target="_blank">
+                        ${article.title}
                     </a>
                 </div>
+
+                <div class="meta">
+                    ${article.source}
+                </div>
+
+                ${
+                    article.published
+                    ?
+                    `
+                    <div class="published">
+                        ${formatDate(
+                            article.published
+                        )}
+                    </div>
+                    `
+                    :
+                    ""
+                }
 
             </div>
 
@@ -191,6 +231,9 @@ async function buildFeed(){
                 r =>
                     r.value
             );
+
+    window.allStories =
+        stories;
 
     const sections = {
 
