@@ -79,7 +79,7 @@ async function getFeed(feed){
    source:feed.name,
    title:item.title,
    link:item.link,
-   published:item.pubDate,
+   published: JSON.stringify(item),
    summary:stripHtml(item.description||"")
  }));
 
@@ -105,7 +105,7 @@ async function getFeed(feed){
      source: feed.name,
      title: item.title,
      link: item.link,
-     published: item.pubDate,
+     published: JSON.stringify(item),
      summary: stripHtml(item.description || "")
    };
 
