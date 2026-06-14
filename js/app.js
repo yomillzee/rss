@@ -248,6 +248,7 @@ function renderSavedArticles(){
 
 }
 
+renderSavedArticles();
 buildFeed();
 
-alert(typeof saveArticle);
+renderSavedArticles();
