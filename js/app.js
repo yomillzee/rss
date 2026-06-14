@@ -1,3 +1,5 @@
+localStorage.removeItem("savedArticles");
+
 function saveArticle(link){
 
     const article =
