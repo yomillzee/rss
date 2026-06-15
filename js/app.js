@@ -1,13 +1,19 @@
-localStorage.removeItem("dismissedArticles");
-
 function getSavedArticles(){
 
     try{
 
-        return JSON.parse(
-            localStorage.getItem(
-                "savedArticles"
-            ) || "[]"
+        const saved =
+            JSON.parse(
+                localStorage.getItem(
+                    "savedArticles"
+                ) || "[]"
+            );
+
+        return saved.filter(
+            article =>
+                article &&
+                typeof article === "object" &&
+                article.link
         );
 
     }
@@ -38,15 +44,26 @@ function getDismissedArticles(){
 
     try{
 
-        return JSON.parse(
-            localStorage.getItem(
-                "dismissedArticles"
-            ) || "[]"
+        const dismissed =
+            JSON.parse(
+                localStorage.getItem(
+                    "dismissedArticles"
+                ) || "[]"
+            );
+
+        return dismissed.filter(
+            link =>
+                typeof link === "string"
         );
 
     }
 
     catch(error){
+
+        console.error(
+            "Dismissed articles parse error:",
+            error
+        );
 
         return [];
 
@@ -75,10 +92,49 @@ function decodeLink(link){
 
 }
 
+function escapeHtml(value){
+
+    return String(value || "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+function escapeAttr(value){
+
+    return escapeHtml(value);
+
+}
+
+function getDateValue(dateString){
+
+    if(!dateString){
+        return 0;
+    }
+
+    const normalized =
+        String(dateString)
+            .replace(" ","T");
+
+    const date =
+        new Date(normalized);
+
+    if(isNaN(date)){
+        return 0;
+    }
+
+    return date.getTime();
+
+}
+
 function isArticleSaved(link){
 
     return getSavedArticles().some(
-        article => article.link === link
+        article =>
+            article.link === link
     );
 
 }
@@ -140,10 +196,12 @@ function saveArticle(link){
 
     const article =
         window.allStories.find(
-            story => story.link === decodedLink
+            story =>
+                story.link === decodedLink
         );
 
     if(!article){
+        showToast("Article not found");
         return;
     }
 
@@ -189,6 +247,8 @@ function unsaveArticle(link){
     renderSavedArticles();
     renderFeed();
 
+    showToast("Removed");
+
 }
 
 function dismissArticle(link){
@@ -217,20 +277,20 @@ function dismissArticle(link){
 
     renderFeed();
 
-    showToast(
-        "Dismissed"
-    );
+    showToast("Dismissed");
 
 }
 
-window.saveArticle = saveArticle;
-window.unsaveArticle = unsaveArticle;
+window.saveArticle =
+    saveArticle;
+
+window.unsaveArticle =
+    unsaveArticle;
 
 window.dismissArticle =
     dismissArticle;
 
 window.allStories = [];
-
 window.searchTerm = "";
 
 async function getFeed(feed){
@@ -238,7 +298,7 @@ async function getFeed(feed){
     try{
 
         const endpoint =
-    `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed.url)}&count=50`;
+            `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed.url)}&count=20`;
 
         const response =
             await fetch(endpoint);
@@ -246,17 +306,37 @@ async function getFeed(feed){
         const data =
             await response.json();
 
-        return (data.items || []).map(item => ({
+        if(
+            !data ||
+            !Array.isArray(data.items)
+        ){
+            console.warn(
+                "No items returned for",
+                feed.name,
+                data
+            );
 
-            category: feed.category,
-            source: feed.name,
-            title: item.title,
-            link: item.link,
+            return [];
+        }
 
-thumbnail:
-    item.thumbnail ||
-    item.enclosure?.link ||
-    null,
+        return data.items.map(item => ({
+
+            category:
+                feed.category,
+
+            source:
+                feed.name,
+
+            title:
+                item.title || "Untitled",
+
+            link:
+                item.link || "#",
+
+            thumbnail:
+                item.thumbnail ||
+                item.enclosure?.link ||
+                null,
 
             published:
                 item.pubDate ||
@@ -276,6 +356,7 @@ thumbnail:
     catch(error){
 
         console.error(
+            "Feed error:",
             feed.name,
             error
         );
@@ -310,12 +391,12 @@ function renderSaveButton(story){
 
     return `
 
-        <button
-            class="save-btn"
-            onclick="saveArticle('${encodeURIComponent(story.link)}')"
-        >
-            Save
-        </button>
+    <button
+        class="save-btn"
+        onclick="saveArticle('${encodeURIComponent(story.link)}')"
+    >
+        Save
+    </button>
 
     `;
 
@@ -323,37 +404,60 @@ function renderSaveButton(story){
 
 function renderStory(story){
 
+    const title =
+        escapeHtml(story.title);
+
+    const link =
+        escapeAttr(story.link);
+
+    const source =
+        escapeHtml(story.source);
+
+    const category =
+        escapeHtml(story.category);
+
+    const summary =
+        escapeHtml(
+            (story.summary || "")
+                .substring(0,250)
+        );
+
+    const thumbnail =
+        story.thumbnail
+            ? escapeAttr(story.thumbnail)
+            : "";
+
     return `
 
     <div class="story">
 
-${
-    story.thumbnail
-    ?
-    `
-    <img
-        class="story-thumb"
-        src="${story.thumbnail}"
-        alt=""
-        loading="lazy"
-    >
-    `
-    :
-    ""
-}
+        ${
+            thumbnail
+            ?
+            `
+            <img
+                class="story-thumb"
+                src="${thumbnail}"
+                alt=""
+                loading="lazy"
+            >
+            `
+            :
+            ""
+        }
 
         <div class="category">
-            ${story.category}
+            ${category}
         </div>
 
         <div class="title">
-            <a href="${story.link}" target="_blank">
-                ${story.title}
+            <a href="${link}" target="_blank">
+                ${title}
             </a>
         </div>
 
         <div class="meta">
-            ${story.source}
+            ${source}
         </div>
 
         ${
@@ -361,32 +465,37 @@ ${
             ?
             `
             <div class="published">
-                ${formatDate(
-                    story.published
-                )}
+                ${formatDate(story.published)}
             </div>
             `
             :
             ""
         }
 
-       <div class="summary">
-    ${(story.summary || "")
-        .substring(0,250)}...
-</div>
+        ${
+            summary
+            ?
+            `
+            <div class="summary">
+                ${summary}...
+            </div>
+            `
+            :
+            ""
+        }
 
         <div class="story-actions">
 
-    ${renderSaveButton(story)}
+            ${renderSaveButton(story)}
 
-    <button
-        class="dismiss-btn"
-        onclick="dismissArticle('${encodeURIComponent(story.link)}')"
-    >
-        Dismiss
-    </button>
+            <button
+                class="dismiss-btn"
+                onclick="dismissArticle('${encodeURIComponent(story.link)}')"
+            >
+                Dismiss
+            </button>
 
-</div>
+        </div>
 
     </div>
 
@@ -418,22 +527,36 @@ function renderSavedArticles(){
     }
 
     container.innerHTML =
-        saved.map(article => `
+        saved.map(article => {
+
+            const title =
+                escapeHtml(article.title);
+
+            const link =
+                escapeAttr(article.link);
+
+            const source =
+                escapeHtml(article.source);
+
+            const category =
+                escapeHtml(article.category);
+
+            return `
 
             <div class="story">
 
                 <div class="category">
-                    ${article.category}
+                    ${category}
                 </div>
 
                 <div class="title">
-                    <a href="${article.link}" target="_blank">
-                        ${article.title}
+                    <a href="${link}" target="_blank">
+                        ${title}
                     </a>
                 </div>
 
                 <div class="meta">
-                    ${article.source}
+                    ${source}
                 </div>
 
                 ${
@@ -441,9 +564,7 @@ function renderSavedArticles(){
                     ?
                     `
                     <div class="published">
-                        ${formatDate(
-                            article.published
-                        )}
+                        ${formatDate(article.published)}
                     </div>
                     `
                     :
@@ -459,16 +580,57 @@ function renderSavedArticles(){
 
             </div>
 
-        `).join("");
+            `;
+
+        }).join("");
+
+}
+
+function getVisibleStories(){
+
+    const dismissed =
+        getDismissedArticles();
+
+    return window.allStories
+        .filter(
+            story =>
+                !dismissed.includes(
+                    story.link
+                )
+        )
+        .filter(story => {
+
+            if(!window.searchTerm){
+                return true;
+            }
+
+            const search =
+                window.searchTerm
+                    .toLowerCase();
+
+            const searchableText =
+                [
+                    story.title,
+                    story.source,
+                    story.category,
+                    story.summary
+                ]
+                .join(" ")
+                .toLowerCase();
+
+            return searchableText
+                .includes(search);
+
+        });
 
 }
 
 function renderFeed(){
 
-const topFeed =
-    document.getElementById(
-        "top-feed"
-    );
+    const topFeed =
+        document.getElementById(
+            "top-feed"
+        );
 
     const sections = {
 
@@ -514,99 +676,60 @@ const topFeed =
 
         });
 
-const dismissed =
-    getDismissedArticles();
+    const visibleStories =
+        getVisibleStories();
 
-const visibleStories =
-    window.allStories
-        .filter(
-            story =>
-                !dismissed.includes(
-                    story.link
-                )
-        )
-        .filter(
-            story => {
+    if(topFeed){
 
-                if(
-                    !window.searchTerm
-                ){
-                    return true;
-                }
-
-                const search =
-                    window.searchTerm
-                        .toLowerCase();
-
-                return (
-                    story.title
-                        .toLowerCase()
-                        .includes(search)
-                    ||
-                    story.source
-                        .toLowerCase()
-                        .includes(search)
-                    ||
-                    (story.summary || "")
-    .toLowerCase()
-    .includes(search)
-                );
-
-            }
-        );
-
-if(topFeed){
-
-    const newestStories =
-    [...visibleStories]
-            .sort(
-                (a,b) =>
-                    new Date(
-                        b.published || 0
-                    ) -
-                    new Date(
-                        a.published || 0
-                    )
-            )
-            .slice(0,10);
-
-    topFeed.innerHTML =
-        newestStories
-            .map(
-                story =>
-                    renderStory(
-                        story
-                    )
-            )
-            .join("");
-
-}
-
-    Object.keys(sections)
-    .forEach(category => {
-
-        const target =
-            sections[category];
-
-        const categoryStories =
-            visibleStories
-                .filter(
-                    story =>
-                        story.category === category
+        const newestStories =
+            [...visibleStories]
+                .sort(
+                    (a,b) =>
+                        getDateValue(b.published) -
+                        getDateValue(a.published)
                 )
                 .slice(0,10);
 
-        categoryStories
-            .forEach(story => {
+        topFeed.innerHTML =
+            newestStories.length
+                ?
+                newestStories
+                    .map(renderStory)
+                    .join("")
+                :
+                '<div class="empty">No top stories right now.</div>';
 
-                target.innerHTML +=
-                    renderStory(
-                        story
-                    );
+    }
 
-            });
+    Object
+        .keys(sections)
+        .forEach(category => {
 
-    });
+            const target =
+                sections[category];
+
+            if(!target){
+                return;
+            }
+
+            const categoryStories =
+                visibleStories
+                    .filter(
+                        story =>
+                            story.category === category
+                    )
+                    .slice(0,10);
+
+            target.innerHTML =
+                categoryStories.length
+                    ?
+                    categoryStories
+                        .map(renderStory)
+                        .join("")
+                    :
+                    '<div class="empty">No articles right now.</div>';
+
+        });
 
 }
 
@@ -623,57 +746,48 @@ async function buildFeed(){
     const stories =
         results
             .filter(
-                r =>
-                    r.status === "fulfilled"
+                result =>
+                    result.status === "fulfilled"
             )
             .flatMap(
-                r =>
-                    r.value
+                result =>
+                    result.value
+            )
+            .filter(
+                story =>
+                    story &&
+                    story.link &&
+                    story.title
             );
 
     window.allStories =
-    stories.sort(
-        (a,b) =>
-            new Date(
-                b.published || 0
-            ) -
-            new Date(
-                a.published || 0
-            )
-    );
+        stories.sort(
+            (a,b) =>
+                getDateValue(b.published) -
+                getDateValue(a.published)
+        );
 
-const counts = {};
+    renderFeed();
 
-stories.forEach(story => {
-
-    counts[story.category] =
-        (counts[story.category] || 0) + 1;
-
-});
-
-alert(
-    JSON.stringify(
-        counts,
-        null,
-        2
-    )
-);
-renderFeed();
 }
 
-const searchInput =
-    document.getElementById(
-        "article-search"
-    );
+function setupSearch(){
 
-if(searchInput){
+    const searchInput =
+        document.getElementById(
+            "article-search"
+        );
+
+    if(!searchInput){
+        return;
+    }
 
     searchInput.addEventListener(
         "input",
         event => {
 
             window.searchTerm =
-                event.target.value;
+                event.target.value.trim();
 
             renderFeed();
 
@@ -683,4 +797,5 @@ if(searchInput){
 }
 
 renderSavedArticles();
+setupSearch();
 buildFeed();
