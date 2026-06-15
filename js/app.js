@@ -642,22 +642,7 @@ async function buildFeed(){
             )
     );
 
-const counts = {};
 
-stories.forEach(story => {
-
-    counts[story.category] =
-        (counts[story.category] || 0) + 1;
-
-});
-
-alert(
-    JSON.stringify(
-        counts,
-        null,
-        2
-    )
-);
 renderFeed();
 }
 
