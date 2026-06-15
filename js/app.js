@@ -298,7 +298,7 @@ async function getFeed(feed){
     try{
 
         const endpoint =
-            `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed.url)}&count=20`;
+            `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed.url)}`;
 
         const response =
             await fetch(endpoint);
@@ -451,7 +451,7 @@ function renderStory(story){
         </div>
 
         <div class="title">
-            <a href="${link}" target="_blank">
+            <a href="${link}" target="_blank" rel="noopener noreferrer">
                 ${title}
             </a>
         </div>
@@ -550,7 +550,7 @@ function renderSavedArticles(){
                 </div>
 
                 <div class="title">
-                    <a href="${link}" target="_blank">
+                    <a href="${link}" target="_blank" rel="noopener noreferrer">
                         ${title}
                     </a>
                 </div>
