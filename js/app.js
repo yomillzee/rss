@@ -236,7 +236,7 @@ async function getFeed(feed){
     try{
 
         const endpoint =
-            `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed.url)}`;
+    `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed.url)}&count=50`;
 
         const response =
             await fetch(endpoint);
