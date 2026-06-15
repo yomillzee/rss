@@ -518,13 +518,42 @@ const dismissed =
     getDismissedArticles();
 
 const visibleStories =
-    window.allStories.filter(
-        story =>
-            !dismissed.includes(
-                story.link
-            )
-    );
+    window.allStories
+        .filter(
+            story =>
+                !dismissed.includes(
+                    story.link
+                )
+        )
+        .filter(
+            story => {
 
+                if(
+                    !window.searchTerm
+                ){
+                    return true;
+                }
+
+                const search =
+                    window.searchTerm
+                        .toLowerCase();
+
+                return (
+                    story.title
+                        .toLowerCase()
+                        .includes(search)
+                    ||
+                    story.source
+                        .toLowerCase()
+                        .includes(search)
+                    ||
+                    story.summary
+                        .toLowerCase()
+                        .includes(search)
+                );
+
+            }
+        );
 if(topFeed){
 
     const newestStories =
