@@ -545,9 +545,9 @@ const visibleStories =
                         .toLowerCase()
                         .includes(search)
                     ||
-                    story.summary
-                        .toLowerCase()
-                        .includes(search)
+                    (story.summary || "")
+    .toLowerCase()
+    .includes(search)
                 );
 
             }
