@@ -552,15 +552,6 @@ const visibleStories =
                         .includes(search)
                 );
 
-alert(
-    "Visible stories: " +
-    visibleStories.length
-);
-
-            }
-        );
-
-alert("Top Feed Found");
 
 if(topFeed){
 
@@ -586,10 +577,6 @@ if(topFeed){
                     )
             )
             .join("");
-
-alert(
-    "Top stories rendered"
-);
 
 }
 
