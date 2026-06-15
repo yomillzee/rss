@@ -229,6 +229,8 @@ window.dismissArticle =
 
 window.allStories = [];
 
+window.searchTerm = "";
+
 async function getFeed(feed){
 
     try{
