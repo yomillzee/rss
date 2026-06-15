@@ -552,6 +552,11 @@ const visibleStories =
                         .includes(search)
                 );
 
+alert(
+    "Visible stories: " +
+    visibleStories.length
+);
+
             }
         );
 if(topFeed){
