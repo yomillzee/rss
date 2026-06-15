@@ -635,5 +635,26 @@ async function buildFeed(){
 renderFeed();
 }
 
+const searchInput =
+    document.getElementById(
+        "article-search"
+    );
+
+if(searchInput){
+
+    searchInput.addEventListener(
+        "input",
+        event => {
+
+            window.searchTerm =
+                event.target.value;
+
+            renderFeed();
+
+        }
+    );
+
+}
+
 renderSavedArticles();
 buildFeed();
