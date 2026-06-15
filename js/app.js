@@ -552,6 +552,8 @@ const visibleStories =
                         .includes(search)
                 );
 
+}
+        );
 
 if(topFeed){
 
