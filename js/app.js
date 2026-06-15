@@ -587,6 +587,10 @@ if(topFeed){
             )
             .join("");
 
+alert(
+    "Top stories rendered"
+);
+
 }
 
     Object.keys(sections)
