@@ -368,12 +368,10 @@ ${
             ""
         }
 
-        <div class="summary">
-            ${story.summary.substring(
-                0,
-                250
-            )}...
-        </div>
+       <div class="summary">
+    ${(story.summary || "")
+        .substring(0,250)}...
+</div>
 
         <div class="story-actions">
 
