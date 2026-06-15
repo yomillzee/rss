@@ -581,21 +581,29 @@ if(topFeed){
 
 }
 
-    visibleStories.forEach(story => {
+    Object.keys(sections)
+    .forEach(category => {
 
         const target =
-            sections[
-                story.category
-            ];
+            sections[category];
 
-        if(target){
+        const categoryStories =
+            visibleStories
+                .filter(
+                    story =>
+                        story.category === category
+                )
+                .slice(0,10);
 
-            target.innerHTML +=
-                renderStory(
-                    story
-                );
+        categoryStories
+            .forEach(story => {
 
-        }
+                target.innerHTML +=
+                    renderStory(
+                        story
+                    );
+
+            });
 
     });
 
