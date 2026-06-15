@@ -1,3 +1,5 @@
+localStorage.removeItem("dismissedArticles");
+
 function getSavedArticles(){
 
     try{
