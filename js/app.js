@@ -559,6 +559,9 @@ alert(
 
             }
         );
+
+alert("Top Feed Found");
+
 if(topFeed){
 
     const newestStories =
